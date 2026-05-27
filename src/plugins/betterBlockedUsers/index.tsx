@@ -68,7 +68,7 @@ export default definePlugin({
     renderUser(userId: string, rest: any) {
         return (
             <div style={{ display: "flex", gap: "8px" }}>
-                <Button color={Button.Colors.PRIMARY} onClick={() => openUserProfile(userId)}>
+                <Button color="PRIMARY" onClick={() => openUserProfile(userId)}>
                     {getIntlMessage("SHOW_USER_PROFILE")}
                 </Button>
                 {rest}

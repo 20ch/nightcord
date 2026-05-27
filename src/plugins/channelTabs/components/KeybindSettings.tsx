@@ -141,7 +141,7 @@ function KeybindInput({ label, description, settingKey, enabledKey }: KeybindInp
                 </button>
                 <Button
                     size={Button.Sizes.SMALL}
-                    color={Button.Colors.PRIMARY}
+                    color="PRIMARY"
                     onClick={handleReset}
                     disabled={!isEnabled}
                 >

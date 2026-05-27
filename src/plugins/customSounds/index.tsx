@@ -326,7 +326,7 @@ const settings = definePluginSettings({
                 <div>
                     <div className="vc-custom-sounds-buttons">
                         <Button color={Button.Colors.BRAND} onClick={triggerFileUpload}>Import</Button>
-                        <Button color={Button.Colors.PRIMARY} onClick={downloadSettings}>Export</Button>
+                        <Button color="PRIMARY" onClick={downloadSettings}>Export</Button>
                         <Button color={Button.Colors.RED} onClick={resetOverrides}>Reset All</Button>
                         <Button color={Button.Colors.WHITE} onClick={debugCustomSounds}>Debug</Button>
                         <input

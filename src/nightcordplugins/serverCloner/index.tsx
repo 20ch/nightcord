@@ -589,7 +589,7 @@ function ServerClonerUI({ initialSourceId = "" }: { initialSourceId?: string }) 
             <div style={{ display: "flex", gap: 8 }}>
                 <Button
                     size={Button.Sizes.MEDIUM}
-                    color={_running ? Button.Colors.PRIMARY : Button.Colors.BRAND}
+                    color={_running ? "PRIMARY" : Button.Colors.BRAND}
                     disabled={!sourceId || !targetId || _running}
                     onClick={startClone}
                     style={{ flex: 1 }}

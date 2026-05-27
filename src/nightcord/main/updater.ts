@@ -32,7 +32,6 @@ autoUpdater.on("update-available", update => {
 let updateDownloaded = false;
 autoUpdater.on("update-downloaded", () => {
     updateDownloaded = true;
-    setTimeout(() => autoUpdater.quitAndInstall(false, true), 100);
 });
 autoUpdater.on("download-progress", p =>
     updaterWindow?.webContents.send(UpdaterIpcEvents.DOWNLOAD_PROGRESS, p.percent)
@@ -47,18 +46,11 @@ autoUpdater.fullChangelog = true;
 // en comparant la version installée avec la dernière version vérifiée
 let lastCheckedVersion: string | null = null;
 
-const isOutdated = autoUpdater.checkForUpdates().then(res => {
-    if (!res?.isUpdateAvailable) return false;
-    // Si l'update est déjà téléchargée (on vient de redémarrer après install), ignorer
-    if (res.updateInfo?.version === app.getVersion()) return false;
-    lastCheckedVersion = res.updateInfo?.version ?? null;
-    return true;
-});
+const isOutdated = Promise.resolve(false);
 
 handle(IpcEvents.UPDATER_IS_OUTDATED, () => isOutdated);
 handle(IpcEvents.UPDATER_OPEN, async () => {
-    const res = await autoUpdater.checkForUpdates();
-    if (res?.isUpdateAvailable && res.updateInfo) openUpdater(res.updateInfo);
+    return;
 });
 
 function openUpdater(update: UpdateInfo) {

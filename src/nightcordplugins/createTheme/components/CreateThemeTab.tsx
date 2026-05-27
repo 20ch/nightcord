@@ -408,7 +408,7 @@ export function CreateThemeTab() {
                 </div>
                 <Button
                     size={Button.Sizes.SMALL}
-                    color={Button.Colors.PRIMARY}
+                    color="PRIMARY"
                     look={Button.Looks.FILLED}
                     onClick={() => update("color", "313338")}
                     style={{ marginTop: 12, width: "fit-content" }}

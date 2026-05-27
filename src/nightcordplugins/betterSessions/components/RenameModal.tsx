@@ -77,7 +77,7 @@ export function RenameModal({ props, session, state }: { props: ModalProps, sess
             <ModalFooter>
                 <div className="vc-betterSessions-footer-buttons">
                     <Button
-                        color={Button.Colors.PRIMARY}
+                        color="PRIMARY"
                         onClick={() => props.onClose()}
                     >
                         Cancel

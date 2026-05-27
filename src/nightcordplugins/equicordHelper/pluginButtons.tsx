@@ -44,7 +44,7 @@ export const PluginButtons = ErrorBoundary.wrap(function PluginCards({ message }
         pluginButtons.push(
             <Button
                 key="vc-plugin-toggle"
-                color={disabled ? Button.Colors.PRIMARY : (isEnabled ? Button.Colors.RED : Button.Colors.GREEN)}
+                color={disabled ? "PRIMARY" : (isEnabled ? Button.Colors.RED : Button.Colors.GREEN)}
                 disabled={disabled}
                 size={Button.Sizes.SMALL}
                 onClick={async () => {

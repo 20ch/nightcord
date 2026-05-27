@@ -451,7 +451,7 @@ function SharePermsModal({ rootProps }: { rootProps: any; }) {
                                         </div>
                                     </div>
                                 </div>
-                                <Button size={Button.Sizes.SMALL} color={Button.Colors.PRIMARY} onClick={() => removeUser(index)}>
+                                <Button size={Button.Sizes.SMALL} color="PRIMARY" onClick={() => removeUser(index)}>
                                     Revoke
                                 </Button>
                             </div>

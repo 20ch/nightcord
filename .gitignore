@@ -35,16 +35,25 @@ ExtensionCache/
 
 # build outputs & binaries
 release/
-build/
 dist/
 # Exception : scripts/build/ contient les scripts de compilation et doit être versionné
 !scripts/build/
+# Build resources needed by electron-builder
+build/*
+!build/icon.icns
 
 # IDE settings
 .vscode/
 
 # backup & temp files
 *.patch.txt
+*backup*/
+*Backup*/
+*bak*/
+*old*/
+static/modules_backup_working_stereo/
+installer-src/bin/
+installer-src/obj/
 
 # Test and local dev directories
 test-dist/

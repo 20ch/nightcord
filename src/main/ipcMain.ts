@@ -883,6 +883,7 @@ if (IS_DISCORD_DESKTOP) {
     });
 }
 
+ipcMain.removeHandler(IpcEvents.RELAUNCH_APP);
 ipcMain.handle(IpcEvents.RELAUNCH_APP, async () => {
 
     if (process.platform === "win32") {

@@ -234,8 +234,8 @@ function unmountBanner() {
 // ── Plugin ────────────────────────────────────────────────────────────────────
 export default definePlugin({
     name: "NightcordUpdater",
-    enabledByDefault: true,
-    description: "Checks for updates on startup. Green banner only if a newer version exists on GitHub.",
+    enabledByDefault: false,
+    description: "Manual updater disabled for this build.",
     authors: [{ name: "Nightcord", id: 0n }],
 
     start() {
@@ -244,8 +244,7 @@ export default definePlugin({
         if (document.readyState === "complete") mountWhenReady();
         else window.addEventListener("load", mountWhenReady, { once: true });
 
-        // Vérifie les mises à jour 5s après le lancement
-        setTimeout(() => checkForUpdates(), 5000);
+        // Auto-update intentionally disabled for this build.
     },
 
     stop() {

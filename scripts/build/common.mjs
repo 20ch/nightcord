@@ -48,7 +48,16 @@ if (!IS_COMPANION_TEST && process.argv.includes("--companion-test"))
     console.error("--companion-test must be run with --reporter for any effect");
 
 export const IS_UPDATER_DISABLED = process.argv.includes("--disable-updater");
-export const gitHash = process.env.NIGHTCORD_HASH || execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim();
+function resolveGitHash() {
+    if (process.env.NIGHTCORD_HASH) return process.env.NIGHTCORD_HASH;
+    try {
+        return execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim();
+    } catch {
+        return "unknown";
+    }
+}
+
+export const gitHash = resolveGitHash();
 
 export const banner = {
     js: `
@@ -241,11 +250,15 @@ export const gitRemotePlugin = {
         build.onLoad({ filter, namespace: "git-remote" }, async () => {
             let remote = process.env.NIGHTCORD_REMOTE;
             if (!remote) {
-                const res = await promisify(exec)("git remote get-url origin", { encoding: "utf-8" });
-                remote = res.stdout.trim()
-                    .replace("https://github.com/", "")
-                    .replace("git@github.com:", "")
-                    .replace(/.git$/, "");
+                try {
+                    const res = await promisify(exec)("git remote get-url origin", { encoding: "utf-8" });
+                    remote = res.stdout.trim()
+                        .replace("https://github.com/", "")
+                        .replace("git@github.com:", "")
+                        .replace(/.git$/, "");
+                } catch {
+                    remote = "nightcordoff/nightcord";
+                }
             }
 
             return { contents: `export default "${remote}"` };

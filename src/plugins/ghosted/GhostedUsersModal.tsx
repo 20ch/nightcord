@@ -132,7 +132,7 @@ export function GhostedUsersModal({ modalProps, ghostedChannels: initialChannels
                                 </div>
                                 <Button
                                     size={Button.Sizes.SMALL}
-                                    color={Button.Colors.PRIMARY}
+                                    color="PRIMARY"
                                     onClick={e => handleClearClick(e, channelId)}
                                 >
                                     Clear

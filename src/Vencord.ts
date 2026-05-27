@@ -266,21 +266,7 @@ function showGreenUpdateBanner() {
 }
 
 async function runUpdateCheck() {
-    if (IS_UPDATER_DISABLED) return;
-
-    try {
-        const isOutdated = await checkForUpdates();
-        if (IS_DISCORD_DESKTOP) VencordNative.tray.setUpdateState(isOutdated);
-        if (!isOutdated) return;
-
-        if (notifiedForUpdatesThisSession) return;
-        notifiedForUpdatesThisSession = true;
-
-        // Affiche la bannière verte avec auto-install (compte à rebours 10s)
-        setTimeout(() => showGreenUpdateBanner(), 8_000);
-    } catch (err) {
-        UpdateLogger.error("Failed to check for updates", err);
-    }
+    if (IS_DISCORD_DESKTOP) VencordNative.tray.setUpdateState(false);
 }
 
 function initTrayIpc() {
@@ -322,10 +308,7 @@ async function init() {
     syncSettings();
     initTrayIpc();
 
-    if (!IS_WEB && !IS_UPDATER_DISABLED) {
-        runUpdateCheck();
-        setInterval(runUpdateCheck, 1000 * 60 * 30); // 30 minutes
-    }
+    runUpdateCheck();
 
     if (IS_DEV) {
         const pendingPatches = patches.filter(p => !p.all && p.predicate?.() !== false);

@@ -79,7 +79,7 @@ function GuildRow({ guild }) {
             </Heading>
             <Button
                 className="row-button"
-                color={Button.Colors.PRIMARY}
+                color="PRIMARY"
                 onClick={() => restoreGuild(guild, SortedGuildStore)}
             >
                 Remove
@@ -113,7 +113,7 @@ export function HiddenServersMenu({ guilds }: { guilds: Guild[]; }) {
                     <div className={cl("folder-header")}>
                         <BaseText size="sm" weight="medium">{folder.folderName || "Folder"}</BaseText>
                         <Button
-                            color={Button.Colors.PRIMARY}
+                            color="PRIMARY"
                             onClick={() => {
                                 folderGuilds.forEach(g => restoreGuild(g, SortedGuildStore));
                             }}

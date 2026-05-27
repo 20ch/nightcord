@@ -54,18 +54,5 @@ export const getRepo = () => Unwrap(VencordNative.updater.getRepo());
  * Vérifie les mises à jour au démarrage et propose à l'utilisateur de mettre à jour.
  */
 export async function maybePromptToUpdate(confirmMessage: string, checkForDev = false) {
-    if (IS_WEB || IS_UPDATER_DISABLED) return;
-    if (checkForDev && IS_DEV) return;
-
-    try {
-        const outdated = await checkForUpdates();
-        if (outdated) {
-            // Mise à jour automatique sans confirmation
-            const downloaded = await update();
-            if (downloaded) await rebuild();
-        }
-    } catch (err) {
-        UpdateLogger.error(err);
-        alert("La vérification des mises à jour a échoué. Vérifie ta connexion ou réinstalle Nightcord.");
-    }
+    return;
 }
