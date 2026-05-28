@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Vencord, a Discord client mod
  * Copyright (c) 2026 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -28,14 +28,7 @@ mkdirSync(USERPLUGINS_DIR, { recursive: true });
 
 registerCspIpcHandlers();
 
-import * as ghostNative from "../nightcordplugins/ghostClient/native";
-(async () => {
-    try {
-        await (ghostNative as any).init(null);
-    } catch (e) {
-        console.warn("[Nightcord] Ghost-server pre-start failed:", e);
-    }
-})();
+
 
 export function ensureSafePath(basePath: string, path: string) {
     const normalizedBasePath = normalize(basePath + "/");
@@ -48,6 +41,60 @@ export function ensureSafePath(basePath: string, path: string) {
 
 function readCss() {
     return readFile(QUICK_CSS_PATH, "utf-8").catch(() => "");
+}
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+function isSafeWorldBombText(text: string) {
+    return typeof text === "string" && text.length > 0 && !/[\x00-\x1F\x7F]/.test(text);
+}
+
+async function runWorldBombElectronSequence(
+    event: Electron.IpcMainInvokeEvent,
+    word: string,
+    lps: number,
+    humanChance: number,
+    targetX: number = -1,
+    targetY: number = -1
+) {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (!win) throw new Error("WorldBombSequence: fenêtre introuvable");
+
+    const safeLps = Math.max(1, Math.min(100, lps));
+    const safeHumanChance = Math.max(0, Math.min(100, humanChance));
+    const minMs = Math.max(10, Math.round(1000 / (safeLps * 1.5)));
+    const maxMs = Math.max(minMs + 1, Math.round(1000 / safeLps));
+    const baseMs = Math.round((minMs + maxMs) / 2);
+    const contentBounds = win.getContentBounds();
+    const x = targetX >= 0
+        ? Math.max(0, Math.round(targetX - contentBounds.x))
+        : Math.round(contentBounds.width / 2);
+    const y = targetY >= 0
+        ? Math.max(0, Math.round(targetY - contentBounds.y))
+        : Math.round(contentBounds.height / 2);
+
+    win.focus();
+    event.sender.focus();
+    event.sender.sendInputEvent({ type: "mouseMove", x, y });
+    event.sender.sendInputEvent({ type: "mouseDown", x, y, button: "left", clickCount: 1 });
+    event.sender.sendInputEvent({ type: "mouseUp", x, y, button: "left", clickCount: 1 });
+    await sleep(20);
+
+    for (const char of word) {
+        if (safeHumanChance > 0 && Math.floor(Math.random() * 100) < safeHumanChance) {
+            event.sender.sendInputEvent({ type: "char", keyCode: "x" });
+            await sleep(baseMs);
+            event.sender.sendInputEvent({ type: "keyDown", keyCode: "Backspace" });
+            event.sender.sendInputEvent({ type: "keyUp", keyCode: "Backspace" });
+            await sleep(baseMs);
+        }
+
+        event.sender.sendInputEvent({ type: "char", keyCode: char });
+        await sleep(Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs);
+    }
+
+    event.sender.sendInputEvent({ type: "keyDown", keyCode: "Enter" });
+    event.sender.sendInputEvent({ type: "keyUp", keyCode: "Enter" });
 }
 
 async function listThemes(): Promise<{ fileName: string; content: string; }[]> {
@@ -172,12 +219,20 @@ ipcMain.handle(IpcEvents.WORLD_BOMB_SEQUENCE, async (
     targetY: number = -1
 ) => {
     const { spawn } = require("child_process");
-    const { writeFileSync, unlinkSync, mkdtempSync } = require("fs");
+    const { writeFileSync, unlinkSync, mkdtempSync, rmdirSync } = require("fs");
     const { join } = require("path");
     const { tmpdir } = require("os");
 
-    if (!/^[\x20-\x7E]+$/.test(word)) {
+    if (!isSafeWorldBombText(word)) {
         throw new Error("WorldBombSequence: caractères non autorisés");
+    }
+
+    if (process.platform !== "win32") {
+        return runWorldBombElectronSequence(event, word, lps, humanChance, targetX, targetY);
+    }
+
+    if (!/^[\x20-\x7E]+$/.test(word)) {
+        throw new Error("WorldBombSequence: caractères non ASCII non supportés par le mode Windows");
     }
     const safeLps = Math.max(1, Math.min(100, lps));
     const safeHumanChance = Math.max(0, Math.min(100, humanChance));

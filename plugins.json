@@ -1,4 +1,4 @@
-﻿[
+[
     {
         "hasPatches":  true,
         "hasCommands":  false,
@@ -7946,25 +7946,6 @@
         "filePath":  "src/nightcordplugins/DMBomb",
         "dirName":  "DMBomb"
     },
-    {
-        "hasPatches":  false,
-        "hasCommands":  false,
-        "enabledByDefault":  true,
-        "required":  false,
-        "isModified":  false,
-        "tags":  [
-
-                 ],
-        "name":  "DoubleCall",
-        "description":  "Join two voice channels simultaneously with your own account.",
-        "authors":  [
-                        {
-                            "name":  "Nightcord",
-                            "id":  "0"
-                        }
-                    ],
-        "filePath":  "src/nightcordplugins/doubleCall",
-        "dirName":  "doubleCall"
     },
     {
         "hasPatches":  false,
@@ -8375,25 +8356,6 @@
         "filePath":  "src/nightcordplugins/hideAttachments",
         "dirName":  "hideAttachments"
     },
-    {
-        "hasPatches":  false,
-        "hasCommands":  false,
-        "enabledByDefault":  true,
-        "required":  false,
-        "isModified":  false,
-        "tags":  [
-
-                 ],
-        "name":  "GhostClient",
-        "description":  "Discord ghost accounts â€” left-click to enable/disable, right-click to configure.",
-        "authors":  [
-                        {
-                            "name":  "Nightcord",
-                            "id":  "0"
-                        }
-                    ],
-        "filePath":  "src/nightcordplugins/ghostClient",
-        "dirName":  "ghostClient"
     },
     {
         "hasPatches":  true,
@@ -9600,7 +9562,7 @@
     {
         "hasPatches":  false,
         "hasCommands":  false,
-        "enabledByDefault":  true,
+        "enabledByDefault":  false,
         "required":  false,
         "isModified":  false,
         "tags":  [
