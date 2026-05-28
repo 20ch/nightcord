@@ -28,17 +28,7 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 
 ---
 
-## Installation (Windows)
-
-1. Download [**`nightcord-install.ps1`**](https://github.com/nightcordoff/nightcord-macos)
-2. Right-click → **Run with PowerShell**
-3. Follow the steps, restart Discord, done.
-
----
-
-## Building from source
-
-If you want to dig into the code or build it yourself:
+## Installation (Macos)
 
 **You'll need:**
 
