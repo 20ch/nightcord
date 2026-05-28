@@ -132,17 +132,43 @@ function getNativeAccounts(): SavedAccount[] {
     }
 }
 
+import { FluxDispatcher } from "@webpack/common";
+
 /** Quick switch — token direct */
 function switchToQuick(token: string) {
     try {
+        const TokenStore = findByProps("getToken", "setToken");
+        if (TokenStore && typeof (TokenStore as any).setToken === "function") {
+            (TokenStore as any).setToken(token);
+        }
+
+        if (FluxDispatcher) {
+            FluxDispatcher.dispatch({
+                type: "CONNECTION_OPEN",
+                user: {},
+                experiments: [],
+                guilds: [],
+                relationships: [],
+                private_channels: [],
+                users: [],
+                analytics_token: "",
+                session_id: ""
+            });
+
+            FluxDispatcher.dispatch({
+                type: "LOGIN_SUCCESS",
+                token: token
+            });
+        }
+
         window.localStorage.setItem("token", `"${token}"`);
-        location.reload();
-    } catch {
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         document.body.appendChild(iframe);
         try { (iframe as any).contentWindow.localStorage.token = `"${token}"`; } catch { }
         document.body.removeChild(iframe);
+        setTimeout(() => location.reload(), 350);
+    } catch {
         location.reload();
     }
 }
@@ -150,15 +176,8 @@ function switchToQuick(token: string) {
 /** Switch pour accounts natifs sans token — utilise le mécanisme Discord natif */
 function switchNativeAccount(userId: string) {
     try {
-        const multiAuth = findByProps("switchAccount", "loginToken") ?? findByProps("switchAccount");
-        if (multiAuth?.switchAccount) {
-            multiAuth.switchAccount(userId);
-            return;
-        }
-        // Fallback : dispatch le flux event comme Discord le fait nativement
-        const Flux = findByProps("dispatch", "subscribe");
-        if (Flux?.dispatch) {
-            Flux.dispatch({ type: "MULTI_ACCOUNT_SWITCH_ATTEMPT", userId });
+        if (FluxDispatcher) {
+            FluxDispatcher.dispatch({ type: "MULTI_ACCOUNT_SWITCH_ATTEMPT", userId });
         }
     } catch {
         console.warn("[MultiInstance] switchNativeAccount failed for", userId);

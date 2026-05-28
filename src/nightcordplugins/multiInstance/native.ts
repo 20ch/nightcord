@@ -179,12 +179,14 @@ export async function openInstanceWindow(
         // En donnant un ID different a chaque fenetre, elles ne se regroupent pas
         const uniqueAppId = `nightcord.instance.${userId}.${Date.now()}`;
 
-        // Icone : rotation 1→2→3→4→5→1→... depuis multi-instance-icons/
+        // Icone : rotation 1→2→3→4→5→1→... depuis multi-instance-icons/ (Win32 uniquement)
         let currentIconPath = "";
-        const iconDir = getDetachedIconDir();
-        currentIconPath = join(iconDir, `${iconCounter}.ico`);
-        if (!existsSync(currentIconPath)) currentIconPath = "";
-        iconCounter = iconCounter >= 5 ? 1 : iconCounter + 1;
+        if (process.platform === "win32") {
+            const iconDir = getDetachedIconDir();
+            currentIconPath = join(iconDir, `${iconCounter}.ico`);
+            if (!existsSync(currentIconPath)) currentIconPath = "";
+            iconCounter = iconCounter >= 5 ? 1 : iconCounter + 1;
+        }
 
         // Session Electron isolee par userId
         const partition = `persist:nightcord-mi-${userId}`;
