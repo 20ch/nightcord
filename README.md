@@ -39,7 +39,10 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 * [pnpm](https://pnpm.io/installation) — `npm install -g pnpm`
 
 ```bash
-git clone https://github.com/nightcordoff/nightcord-macos.git
-cd nightcord-macos
-pnpm install
+
+git clone https://github.com/20ch/nightcord.git
+cd nightcord
+pnpm install -r
+pnpm add -D react react-dom
+pnpm approve-builds
 pnpm run package:dir
