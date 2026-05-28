@@ -1,4 +1,3 @@
-@@ -1,71 +1,58 @@
 /*
  * Vencord, a Discord client mod
  * Copyright (c) 2026 Vendicated and contributors
