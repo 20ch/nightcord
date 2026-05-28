@@ -10,7 +10,7 @@ import { React, useEffect,useState } from "@webpack/common";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 const REMOTE_VERSION_URL =
-    "https://api.github.com/repos/nightcordoff/nightcord/releases/latest";
+    "https://api.github.com/repos/nightcordoff/nightcord-macos/releases/latest";
 
 // ── Version locale (injectée au build via define) ─────────────────────────────
 declare const VERSION: string;
@@ -235,7 +235,7 @@ function unmountBanner() {
 export default definePlugin({
     name: "NightcordUpdater",
     enabledByDefault: false,
-    description: "Manual updater disabled for this build.",
+    description: "Checks for updates on startup. Green banner only if a newer version exists on GitHub.",
     authors: [{ name: "Nightcord", id: 0n }],
 
     start() {
@@ -244,8 +244,8 @@ export default definePlugin({
         if (document.readyState === "complete") mountWhenReady();
         else window.addEventListener("load", mountWhenReady, { once: true });
 
-        // Auto-update intentionally disabled for this build.
-    },
+        // Vérifie les mises à jour 5s après le lancement
+        setTimeout(() => checkForUpdates(), 5000);    },
 
     stop() {
         unmountBanner();
