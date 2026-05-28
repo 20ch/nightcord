@@ -39,7 +39,7 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 * [pnpm](https://pnpm.io/installation) — `npm install -g pnpm`
 
 ```bash
-git clone [https://github.com/nightcordoff/nightcord-macos.git](https://github.com/nightcordoff/nightcord-macos.git)
-cd nightcord-macos
+git clone https://github.com/nightcordoff/nightcord-macos.git
+cd nightcord
 pnpm install
 pnpm run package:dir
