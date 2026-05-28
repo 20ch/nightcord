@@ -28,7 +28,7 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 
 ---
 
-## Installation (Macos)
+## Installation (Macos ARM64)
 
 **You'll need:**
 
