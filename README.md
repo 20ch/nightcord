@@ -29,8 +29,7 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 > 📢 **macOS Note:** A lot of plugin fixes are rolling out for macOS, including stability improvements for plugins like **Word Bomb** and **Multi-Instance** support.
 
 ---
-
-## Installation (Macos ARM64)
+## Installation (macOS ARM64)
 
 **You'll need:**
 
@@ -39,7 +38,6 @@ Nightcord is a fork of [Equicord](https://github.com/Equicord/Equicord), which i
 * [pnpm](https://pnpm.io/installation) — `npm install -g pnpm`
 
 ```bash
-
 git clone https://github.com/20ch/nightcord.git
 cd nightcord
 git reset --hard HEAD
@@ -47,3 +45,15 @@ pnpm install -r
 pnpm add -D react react-dom
 pnpm approve-builds
 pnpm run package:dir
+```
+
+Once the build is finished:
+
+1. Open the `nightcord` folder
+2. Go into the `release` folder
+3. Open the `arm64` folder
+
+Your built Nightcord application will be there.
+
+If the app launches correctly, you're good to go.
+
