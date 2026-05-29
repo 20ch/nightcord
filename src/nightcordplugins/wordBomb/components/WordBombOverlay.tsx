@@ -79,7 +79,7 @@ export function WordBombOverlay() {
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Calibrage supprimé — le clic est toujours au centre dynamique de la fenêtre Discord
-    const [lps, setLps] = useState(() => parseFloat(getSetting("wb_lps", "50")));
+    const [lps, setLps] = useState(() => parseFloat(getSetting("wb_lps", "45")));
     const [humanChance, setHumanChance] = useState(() => parseInt(getSetting("wb_humanChance", "0")));
     const [safeMode, setSafeMode] = useState(() => getSetting("wb_safeMode", "true") === "true");
     const [theme, setTheme] = useState(() => getSetting("wb_theme", ""));
