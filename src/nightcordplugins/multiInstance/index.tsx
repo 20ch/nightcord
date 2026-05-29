@@ -29,12 +29,25 @@ let encryptHooked = false;
 
 async function loadTokenCache(): Promise<void> {
     if (tokenCacheLoaded) return;
-    tokenCache = (await DataStore.get<Record<string, string>>(MI_TOKEN_CACHE_KEY)) ?? {};
+    const encryptedCache = (await DataStore.get<Record<string, string>>(MI_TOKEN_CACHE_KEY)) ?? {};
+    // Decrypt tokens after loading
+    const decryptedCache: Record<string, string> = {};
+    for (const [id, token] of Object.entries(encryptedCache)) {
+        const decrypted = await Native.decryptStoredToken(token);
+        decryptedCache[id] = decrypted ?? token;
+    }
+    tokenCache = decryptedCache;
     tokenCacheLoaded = true;
 }
 
 async function saveTokenCache(): Promise<void> {
-    await DataStore.set(MI_TOKEN_CACHE_KEY, tokenCache);
+    // Encrypt tokens before saving
+    const encryptedCache: Record<string, string> = {};
+    for (const [id, token] of Object.entries(tokenCache)) {
+        const encrypted = await Native.encryptToken(token);
+        encryptedCache[id] = encrypted ?? token;
+    }
+    await DataStore.set(MI_TOKEN_CACHE_KEY, encryptedCache);
 }
 
 function cacheToken(userId: string, token: string): void {

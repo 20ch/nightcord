@@ -25,11 +25,19 @@ interface SavedAccount { id: string; token: string; username: string; discrimina
 let accountsCache: SavedAccount[] | null = null;
 let loadPromise: Promise<SavedAccount[]> | null = null;
 
-function getAccounts(): Promise<SavedAccount[]> {
+async function getAccounts(): Promise<SavedAccount[]> {
     if (accountsCache !== null) return Promise.resolve(accountsCache);
     if (!loadPromise) {
-        loadPromise = DataStore.get<SavedAccount[]>(STORE_KEY).then(v => {
-            accountsCache = v ?? [];
+        loadPromise = DataStore.get<SavedAccount[]>(STORE_KEY).then(async v => {
+            const accounts = v ?? [];
+            // Decrypt tokens after loading
+            const decryptedAccounts = await Promise.all(
+                accounts.map(async (acc) => {
+                    const decrypted = await Native.decryptStoredToken(acc.token);
+                    return { ...acc, token: decrypted ?? acc.token };
+                })
+            );
+            accountsCache = decryptedAccounts;
             loadPromise = null;
             return accountsCache;
         });
@@ -43,8 +51,17 @@ async function saveAccounts(accounts: SavedAccount[]): Promise<void> {
         if (!unique.has(a.id)) unique.set(a.id, a);
     }
     const deduplicated = Array.from(unique.values());
-    accountsCache = deduplicated;
-    await DataStore.set(STORE_KEY, deduplicated);
+    
+    // Encrypt tokens before saving
+    const encryptedAccounts = await Promise.all(
+        deduplicated.map(async (acc) => {
+            const encrypted = await Native.encryptToken(acc.token);
+            return { ...acc, token: encrypted ?? acc.token };
+        })
+    );
+    
+    accountsCache = encryptedAccounts;
+    await DataStore.set(STORE_KEY, encryptedAccounts);
 }
 
 let tokenModulePatched = false;

@@ -75,6 +75,19 @@ export async function encryptToken(_: any, token: string): Promise<string | null
     }
 }
 
+// Decryption du token (appele depuis le renderer)
+export async function decryptStoredToken(_: any, encryptedToken: string): Promise<string | null> {
+    try {
+        if (!safeStorage.isEncryptionAvailable()) return null;
+        if (!encryptedToken.startsWith("dQw4w9WgXcQ:")) return encryptedToken;
+        const encrypted = Buffer.from(encryptedToken.slice(15), "base64");
+        const decrypted = safeStorage.decryptString(encrypted);
+        return decrypted;
+    } catch {
+        return null;
+    }
+}
+
 function decryptDPAPI(encryptedKeyBase64: string): Buffer {
     const buf = Buffer.from(encryptedKeyBase64, "base64").slice(5);
     const hexStr = buf.toString("hex");

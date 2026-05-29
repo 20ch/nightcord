@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { app, BrowserWindow, ipcMain,screen, session } from "electron";
+import { app, BrowserWindow, ipcMain,screen, session, safeStorage } from "electron";
 import { existsSync,mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
@@ -501,4 +501,28 @@ export async function getOpenInstances(_: any): Promise<string[]> {
 export async function closeInstance(_: any, userId: string): Promise<void> {
     const win = openWindows.get(userId);
     if (win && !win.isDestroyed()) win.close();
+}
+
+// Encryption du token (appele depuis le renderer)
+export async function encryptToken(_: any, token: string): Promise<string | null> {
+    try {
+        if (!safeStorage.isEncryptionAvailable()) return null;
+        const encrypted = safeStorage.encryptString(token);
+        return "dQw4w9WgXcQ:" + encrypted.toString("base64");
+    } catch {
+        return null;
+    }
+}
+
+// Decryption du token (appele depuis le renderer)
+export async function decryptStoredToken(_: any, encryptedToken: string): Promise<string | null> {
+    try {
+        if (!safeStorage.isEncryptionAvailable()) return null;
+        if (!encryptedToken.startsWith("dQw4w9WgXcQ:")) return encryptedToken;
+        const encrypted = Buffer.from(encryptedToken.slice(15), "base64");
+        const decrypted = safeStorage.decryptString(encrypted);
+        return decrypted;
+    } catch {
+        return null;
+    }
 }
