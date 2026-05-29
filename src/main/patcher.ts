@@ -188,14 +188,6 @@ if (!IS_VANILLA) {
                     return superIsFullScreen();
                 };
 
-                if (isTransparent) {
-                    this.on("enter-html-full-screen", () => {
-                        if (!isFakeFullScreen) this.setFullScreen(true);
-                    });
-                    this.on("leave-html-full-screen", () => {
-                        if (isFakeFullScreen) this.setFullScreen(false);
-                    });
-                }
 
                 // Apply Windows background material after window creation.
                 // Win11 uses setBackgroundMaterial; Win10 falls back to vibrancy.

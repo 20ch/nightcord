@@ -224,7 +224,7 @@ export async function openInstanceWindow(
             title: `Nightcord [${username || userId}]`,
             icon: currentIconPath || undefined,
             webPreferences: {
-                preload: join(__dirname, "preload.js"),
+                preload: IS_DISCORD_DESKTOP ? process.env.DISCORD_PRELOAD : join(__dirname, "preload.js"),
                 contextIsolation: true,
                 nodeIntegration: false,
                 sandbox: false,
@@ -383,7 +383,7 @@ export async function openInstanceWindowGrouped(
             backgroundColor: "#313338",
             title: `Nightcord [${username || userId}]`,
             webPreferences: {
-                preload: join(__dirname, "preload.js"),
+                preload: IS_DISCORD_DESKTOP ? process.env.DISCORD_PRELOAD : join(__dirname, "preload.js"),
                 contextIsolation: true,
                 nodeIntegration: false,
                 sandbox: false,
