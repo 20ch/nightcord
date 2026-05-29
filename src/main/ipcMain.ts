@@ -126,7 +126,6 @@ async function runMacOSAppleScriptSequence(
 
     const scriptLines = [
         'tell application "System Events"',
-        '  click at {0, 0}',
         '  keystroke "' + escapedWord + '"',
         '  keystroke return',
         'end tell',
@@ -149,7 +148,6 @@ async function runMacOSAppleScriptSequence(
         
         scriptLines.length = 0; // Clear the simple script
         scriptLines.push('tell application "System Events"');
-        scriptLines.push('  click at {0, 0}');
         scriptLines.push(...errorScript);
         scriptLines.push('end tell');
     }
