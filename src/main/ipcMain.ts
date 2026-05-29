@@ -12,7 +12,7 @@ import { debounce } from "@shared/debounce";
 import { IpcEvents } from "@shared/IpcEvents";
 import { app, BrowserWindow, desktopCapturer, dialog, ipcMain, nativeTheme, screen, shell, systemPreferences } from "electron";
 import monacoHtml from "file://monacoWin.html?minify&base64";
-import { FSWatcher, mkdirSync, readFileSync, watch, writeFileSync } from "fs";
+import { FSWatcher, mkdirSync, mkdtempSync, readFileSync, rmdirSync, watch, writeFileSync } from "fs";
 import { open, readdir, readFile, unlink } from "fs/promises";
 import { join, normalize } from "path";
 
@@ -95,6 +95,84 @@ async function runWorldBombElectronSequence(
 
     event.sender.sendInputEvent({ type: "keyDown", keyCode: "Enter" });
     event.sender.sendInputEvent({ type: "keyUp", keyCode: "Enter" });
+}
+
+async function runMacOSAppleScriptSequence(
+    word: string,
+    lps: number,
+    humanChance: number
+) {
+    const { spawn } = require("child_process");
+    const { writeFileSync, unlinkSync, mkdtempSync, rmdirSync } = require("fs");
+    const { join } = require("path");
+    const { tmpdir } = require("os");
+
+    if (!isSafeWorldBombText(word)) {
+        throw new Error("WorldBombSequence: caractères non autorisés");
+    }
+
+    const safeLps = Math.max(1, Math.min(100, lps));
+    const safeHumanChance = Math.max(0, Math.min(100, humanChance));
+    const minMs = Math.max(10, Math.round(1000 / (safeLps * 1.5)));
+    const maxMs = Math.max(minMs + 1, Math.round(1000 / safeLps));
+    const baseMs = Math.round((minMs + maxMs) / 2);
+
+    // Escape special characters for AppleScript
+    const escapedWord = word
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r");
+
+    const scriptLines = [
+        'tell application "System Events"',
+        '  click at {0, 0}',
+        '  keystroke "' + escapedWord + '"',
+        '  keystroke return',
+        'end tell',
+    ];
+
+    // Add human error simulation if needed
+    if (safeHumanChance > 0) {
+        const errorScript: string[] = [];
+        for (const char of word) {
+            if (Math.floor(Math.random() * 100) < safeHumanChance) {
+                errorScript.push('  keystroke "x"');
+                errorScript.push(`  delay ${baseMs / 1000}`);
+                errorScript.push('  keystroke (character id 8)'); // Backspace
+                errorScript.push(`  delay ${baseMs / 1000}`);
+            }
+            errorScript.push(`  keystroke "${char.replace(/"/g, '\\"')}"`);
+            errorScript.push(`  delay ${(Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs) / 1000}`);
+        }
+        errorScript.push('  keystroke return');
+        
+        scriptLines.length = 0; // Clear the simple script
+        scriptLines.push('tell application "System Events"');
+        scriptLines.push('  click at {0, 0}');
+        scriptLines.push(...errorScript);
+        scriptLines.push('end tell');
+    }
+
+    const applescript = scriptLines.join("\n");
+    const tempDir = mkdtempSync(join(tmpdir(), "nightcord-wb-macos-"));
+    const tempFile = join(tempDir, "type.scpt");
+
+    try {
+        writeFileSync(tempFile, applescript, "utf8");
+        
+        await new Promise<void>((resolve, reject) => {
+            const child = spawn("osascript", [tempFile]);
+            child.on("error", reject);
+            child.on("exit", code => {
+                if (code === 0) resolve();
+                else reject(new Error(`osascript exit code ${code}`));
+            });
+        });
+    } finally {
+        try { unlinkSync(tempFile); } catch {}
+        try { rmdirSync(tempDir); } catch {}
+    }
 }
 
 async function listThemes(): Promise<{ fileName: string; content: string; }[]> {
@@ -225,6 +303,10 @@ ipcMain.handle(IpcEvents.WORLD_BOMB_SEQUENCE, async (
 
     if (!isSafeWorldBombText(word)) {
         throw new Error("WorldBombSequence: caractères non autorisés");
+    }
+
+    if (process.platform === "darwin") {
+        return runMacOSAppleScriptSequence(word, lps, humanChance);
     }
 
     if (process.platform !== "win32") {
