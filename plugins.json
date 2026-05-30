@@ -8211,26 +8211,6 @@
         "dirName":  "fakeFriends"
     },
     {
-        "hasPatches":  true,
-        "hasCommands":  false,
-        "enabledByDefault":  true,
-        "required":  true,
-        "isModified":  false,
-        "tags":  [
-
-                 ],
-        "name":  "FixKrisp",
-        "description":  "Forces Krisp (Noise Suppression) to be available by patching MediaEngine and eligibility checks.",
-        "authors":  [
-                        {
-                            "name":  "Nightcord",
-                            "id":  "0"
-                        }
-                    ],
-        "filePath":  "src/nightcordplugins/fixKrisp",
-        "dirName":  "fixKrisp"
-    },
-    {
         "hasPatches":  false,
         "hasCommands":  false,
         "enabledByDefault":  false,
