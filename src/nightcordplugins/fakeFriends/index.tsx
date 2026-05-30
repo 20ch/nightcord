@@ -8,7 +8,7 @@ import { addContextMenuPatch, NavContextMenuPatchCallback, removeContextMenuPatc
 import { Modals, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { RelationshipType } from "@vencord/discord-types/enums";
-import { findByProps } from "@webpack";
+import { findByProps, findByPropsLazy } from "@webpack";
 import { ChannelStore, FluxDispatcher, GuildMemberStore, Menu, React, RelationshipStore, Toasts, UserStore, UserUtils } from "@webpack/common";
 
 const DS_KEY = "FakeFriends_state";
@@ -91,10 +91,11 @@ function unpatchStore() {
 
 // ── Patch acceptFriend ─────────────────────────────────────────────────────────
 let origAccept: Function | null = null;
+const RelationshipActions = findByPropsLazy("acceptFriend", "addFriend") as any;
 
 function patchAcceptFriend() {
     try {
-        const RA = findByProps("acceptFriend", "addFriend") as any;
+        const RA = RelationshipActions;
         if (!RA || origAccept) return;
         origAccept = RA.acceptFriend;
         RA.acceptFriend = async function (userId: string, ...args: any[]) {
@@ -115,7 +116,7 @@ function patchAcceptFriend() {
 function unpatchAcceptFriend() {
     try {
         if (!origAccept) return;
-        const RA = findByProps("acceptFriend", "addFriend") as any;
+        const RA = RelationshipActions;
         if (RA) RA.acceptFriend = origAccept;
         origAccept = null;
     } catch { }
@@ -649,11 +650,12 @@ let origGetRequests: Function | null = null;
 let origHasRequest: Function | null = null;
 
 const fakeMessageRequests = new Map<string, { user: any; channelId: string; msgId: string; timestamp: string; }>();
+const MessageRequestActions = findByPropsLazy("getRequests", "hasRequest") as any;
 
 function patchMessageRequestStore() {
     if (MessageRequestStore) return;
     try {
-        const store = findByProps("getRequests", "hasRequest") as any;
+        const store = MessageRequestActions;
 
         if (!store) return;
         MessageRequestStore = store;

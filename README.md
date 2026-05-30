@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/nightcordoff/nightcord/main/nightcord.ico" width="96" height="96" alt="Nightcord Logo">
-
+  <img src="https://nightcord.su/image.png" width="96" height="96" alt="Nightcord Logo">
+  
 # Nightcord
 
 **A custom Discord client built for people who actually care about how Discord runs.**
@@ -8,7 +8,7 @@
 [![Discord](https://img.shields.io/badge/Discord-Join%20us-5865F2?logo=discord&logoColor=white)](https://discord.gg/nightcord)
 [![License](https://img.shields.io/github/license/nightcordoff/nightcord?color=a855f7)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-3b82f6.svg?logo=windows&logoColor=white)](https://github.com/nightcordoff/nightcord-macos)
-[![Website](https://img.shields.io/badge/website-nightcord.online-5865F2?logo=googlechrome&logoColor=white)](https://nightcord.online)
+[![Website](https://img.shields.io/badge/website-nightcord.su-5865F2?logo=googlechrome&logoColor=white)](https://nightcord.su)
 
 ---
 

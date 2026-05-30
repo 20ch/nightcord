@@ -89,51 +89,18 @@ function UpdateBanner() {
 
     if (!info || dismissed || updateAttempted) return null;
 
-    async function doUpdate() {
+    function doUpdate() {
         if (loading || !info) return;
         setLoading(true);
-        updateAttempted = true; // Marquer immédiatement pour éviter les double-clics
-        setStatus("Téléchargement en cours...");
+        updateAttempted = true;
+        setStatus("Redirection vers le site...");
 
-        try {
-            const { VencordNative } = (window as any);
-            const ipc = VencordNative?.updater;
-            if (!ipc) throw new Error("VencordNative.updater non disponible");
-
-            // Étape 1 : fetch GitHub metadata → stocke l'URL du zip dans le main process
-            const updateRes: { ok: boolean; value?: boolean; error?: any; } = await ipc.update();
-            if (!updateRes?.ok) {
-                throw new Error(updateRes?.error?.message ?? "Échec de la vérification des mises à jour");
-            }
-
-            // Étape 2 : télécharge le zip + extrait dans dist/ (PowerShell)
-            setStatus("✓ Téléchargé ! Extraction en cours...");
-            const buildRes: { ok: boolean; value?: boolean; error?: any; } = await ipc.rebuild();
-            if (!buildRes?.ok) {
-                // IpcRes ok=false → l'erreur est dans buildRes.error
-                const errMsg = buildRes?.error?.message ?? JSON.stringify(buildRes?.error) ?? "Échec de l'installation";
-                throw new Error(errMsg);
-            }
-
-            setStatus("✓ Mise à jour appliquée — redémarrage dans 2s...");
-
-            // Redémarrage propre via le handler RELAUNCH_APP du main process
-            setTimeout(() => {
-                try {
-                    VencordNative.nightcord?.relaunch?.();
-                } catch {
-                    // Fallback Discord Desktop
-                    (window as any).DiscordNative?.app?.relaunch?.();
-                    window.location.reload();
-                }
-            }, 2000);
-        } catch (e: any) {
-            console.error("[NightcordUpdater] Error mise à jour:", e);
-            const msg = e?.message ? e.message.substring(0, 120) : "Erreur inconnue";
-            setStatus(`❌ ${msg}. Vérifie ta connexion ou redémarre manuellement.`);
-            setLoading(false);
-            updateAttempted = false; // Permet un retry
-        }
+        // Rediriger vers le site de téléchargement
+        window.open("https://nightcord.su", "_blank");
+        
+        setTimeout(() => {
+            setDismissed(true);
+        }, 1000);
     }
 
     return React.createElement("div", {

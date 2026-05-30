@@ -92,7 +92,7 @@ async function loadBadges(url: string, noCache = false) {
 async function loadAllBadges(noCache = false) {
     const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache).catch(() => ({}));
     const equicordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache).catch(() => ({}));
-    const nightcordBadges = await loadBadges("https://gist.githubusercontent.com/nightcordoff/29ff0da4ebd5a7e36acdf97be24f28c9/raw/badges.json", noCache).catch(() => ({}));
+    const nightcordBadges = await loadBadges("https://api.nightcord.su/badges", noCache).catch(() => ({}));
 
     DonorBadges = vencordBadges;
     EquicordDonorBadges = equicordBadges;
